@@ -6,13 +6,26 @@
 contains(X,[_|XS]):- contains(X,XS).
 contains(X,[X|_]).
 
-memberAppend1(X,L) :- append(_,[X|_],L).
-memberAppend2(X,L) :- append([X|_],_,L).
+% append(listA,listB,resultList)
+% resultList is the concatenation of listA and listB
+append([],Ys,Ys).
+append([X|Xs],Ys,[X|Zs]):-append(Xs,Ys,Zs).
 
-permutacio([],[]).
-permutacio(L,[X|Xs]):- append(V,[X|P],L),append(V,P,W),permutacio(W,Xs).
-
-%remove_duplicats()
+% permutation(list,permutationList)
+% permutationList is a permutation of list
+% Example:
+% permutation([1,2,3],L).
+%   L = [1, 2, 3] ;
+%   L = [1, 3, 2] ;
+%   L = [2, 1, 3] ;
+%   L = [2, 3, 1] ;
+%   L = [3, 1, 2] ;
+%   L = [3, 2, 1] ;
+permutation([],[]).
+permutation(L,[X|Xs]):- %A permutation of the list L is a list starting with the value X and followed with XS
+    append(V,[X|P],L),  %where the value X is inside L, preceded with V and followed with the P
+    append(V,P,W),      %and V apended P forms W, which is the rest of L without X
+    permutation(W,Xs).  %and Xs is a permutation of W
 
 %suma(L,N+)
 suma([],0).
