@@ -1,5 +1,10 @@
-memberX(X,[_|XS]):- memberX(X,XS).
-memberX(X,[X|_]).
+%contains(element,list)
+%Returns true if the list contains the element
+% Examples:
+% contains(1,[3,4,5]) = false
+% contains(element,[1,2,3]) = element = 1 or element = 2 or element = 3
+contains(X,[_|XS]):- contains(X,XS).
+contains(X,[X|_]).
 
 memberAppend1(X,L) :- append(_,[X|_],L).
 memberAppend2(X,L) :- append([X|_],_,L).
@@ -169,7 +174,7 @@ iocurrencies(X,[X|XS],[I|YS],I) :- Ip is I+1, iocurrencies(X,XS,YS,Ip).
 iocurrencies(X,[Y|XS],YS,I) :- Ip is I+1, iocurrencies(X,XS,YS,Ip).
 %        Y   XS                YS
 %inserta 1, [0,4,5,6,7] ->  [0,1--]
-% INSERTA 1 [4,5,6,7] -> [1,4,5,6,7] 
+% INSERTA 1 [4,5,6,7] -> [1,4,5,6,7]
 inserta(Y,[],[Y]).
 inserta(Y,[X|XS],[Y,X|XS]) :- Y =< X.
 inserta(Y,[X|XS],[X|ZS]) :- inserta(Y,XS,ZS).
