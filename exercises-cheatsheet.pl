@@ -8,8 +8,9 @@ contains(X,[X|_]).
 
 % append(listA,listB,resultList)
 % resultList is the concatenation of listA and listB
-append([],Ys,Ys).
-append([X|Xs],Ys,[X|Zs]):-append(Xs,Ys,Zs).
+%append([],Ys,Ys).          % the result of ppeding and empty list to Ys is the same Ys
+%append([X|Xs],Ys,[X|Zs])   % the result of appending the first element X on YS is X followed by Zs
+%    :- append(Xs,Ys,Zs).   % where Zs is the result of appending Xs to Ys
 
 % permutation(list,permutationList)
 % permutationList is a permutation of list
@@ -27,9 +28,12 @@ permutation(L,[X|Xs]):- %A permutation of the list L is a list starting with the
     append(V,P,W),      %and V apended P forms W, which is the rest of L without X
     permutation(W,Xs).  %and Xs is a permutation of W
 
-%suma(L,N+)
-suma([],0).
-suma([X|XS],N) :- suma(XS,Np), N is Np+X.
+% sum(list,result+)
+% result is the sum of all the elements in the list. Result must be a numeric value.
+sum([],0).
+sum([First|Rest],Result) :-
+    sum(Rest,RestResult),
+    Result is First+RestResult.
 
 %parells(L+,LO)
 parells([],[]).
@@ -173,7 +177,7 @@ test1(L,Z) :- append(DAVANT,[X|REDERA],L), append(DAVANT,[Y|REDERA],Z), Y =\= X.
 palidrom([]).
 % primer == ultim element, com obtenim ultim element?
 % [PRIMER(....)ULTIM]
-palidrom([X|XS]). :- append(_,[ULTIM],XS),X =:= ULTIM, append(MITG,[ULTIM],XS), palidrom(MITG).
+palidrom([X|XS]) :- append(_,[ULTIM],XS),X =:= ULTIM, append(MITG,[ULTIM],XS), palidrom(MITG).
 
 creixent([]).
 creixent([X]).
