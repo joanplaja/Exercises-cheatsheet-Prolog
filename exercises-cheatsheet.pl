@@ -45,11 +45,13 @@ evens([First|Rest],[First|RestEvenList])    %The first element is added on the e
 evens([First|Rest],EvenList)
     :- evens(Rest,EvenList).
 
-%palindrom(L)
-palindrom([]).
-palindrom([X]).
-% si el primer element és igual a lultim de XS, MITG + [X] = XS ( X(....)X no volem X al final perque ja lhem avaluat)
-palindrom([X|XS]) :- append(_,[X],XS),append(MITG,[X],XS), palindrom(MITG).
+%palindrome(List)
+% Returns true if the list is a palindrome
+palindrome([]).
+palindrome([X]).
+palindrome([First|Rest]) :-         %The list will be a palindrome if:
+    append(Middle,[First],Rest),    %the first element is equal the last one on the list
+    palindrome(Middle).             %and if the elements between the first and last ( middle elements ) are also a palindrome
 
 %creixent
 creixent([]).
