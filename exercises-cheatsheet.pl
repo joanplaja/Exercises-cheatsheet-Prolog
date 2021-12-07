@@ -1,5 +1,5 @@
-%contains(Element,List)
-%Returns true if the list contains the element
+% contains(Element,List)
+% Returns true if the list contains the element
 % Examples:
 % contains(1,[3,4,5]) = false
 % contains(element,[1,2,3]) = element = 1 or element = 2 or element = 3
@@ -23,10 +23,10 @@ contains(X,[X|_]).
 %   L = [3, 1, 2] ;
 %   L = [3, 2, 1] ;
 permutation([],[]).
-permutation(L,[X|Xs]):- %A permutation of the list L is a list starting with the value X and followed with XS
-    append(V,[X|P],L),  %where the value X is inside L, preceded with V and followed with the P
-    append(V,P,W),      %and V apended P forms W, which is the rest of L without X
-    permutation(W,Xs).  %and Xs is a permutation of W
+permutation(L,[X|Xs]):- % A permutation of the list L is a list starting with the value X and followed with XS
+    append(V,[X|P],L),  % where the value X is inside L, preceded with V and followed with the P
+    append(V,P,W),      % and V apended P forms W, which is the rest of L without X
+    permutation(W,Xs).  % and Xs is a permutation of W
 
 % sum(List,Result+)
 % result is the sum of all the elements in the list. Result must be a numeric value.
@@ -35,28 +35,38 @@ sum([First|Rest],Result) :-
     sum(Rest,RestResult),
     Result is First+RestResult.
 
-%evens(List,EvenList)
+% evens(List,EvenList)
 % EvenList is the list of even numbers that exists on the list
-evens([],[]).         %If the list is empty the EvenList is empty too
-evens([First|Rest],[First|RestEvenList])    %The first element is added on the even list if:
+evens([],[]).         % If the list is empty the EvenList is empty too
+evens([First|Rest],[First|RestEvenList])    % The first element is added on the even list if:
     :- First mod 2 =:= 0,!,                 % - The first element is divisible by 2
-    evens(Rest,RestEvenList).               %The rest of the even list is constructed recrusivly inspecting the rest of the list
-%If the first element is not even we still need to inspect the rest of the list
+    evens(Rest,RestEvenList).               % The rest of the even list is constructed recrusivly inspecting the rest of the list
+% If the first element is not even we still need to inspect the rest of the list
 evens([First|Rest],EvenList)
     :- evens(Rest,EvenList).
 
-%palindrome(List)
+% palindrome(List)
 % Returns true if the list is a palindrome
 palindrome([]).
 palindrome([X]).
-palindrome([First|Rest]) :-         %The list will be a palindrome if:
-    append(Middle,[First],Rest),    %the first element is equal the last one on the list
-    palindrome(Middle).             %and if the elements between the first and last ( middle elements ) are also a palindrome
+palindrome([First|Rest]) :-         % The list will be a palindrome if:
+    append(Middle,[First],Rest),    % the first element is equal the last one on the list
+    palindrome(Middle).             % and if the elements between the first and last ( middle elements ) are also a palindrome
 
-%creixent
-creixent([]).
-creixent([X]).
-creixent([X,Y|XS]) :- X=<Y, creixent(XS).
+% isOrderedAsc(List)
+% Returns true if the list is ordered ascending
+% Examples:
+% isOrderedAsc([1,2,3,1]) = false
+% isOrderedAsc([1,2,3]) = true
+isOrderedAsc([]).
+isOrderedAsc([Element]).
+%If next line is missing the example isOrderedAsc([1,2,3,4,5,1]) will return true and its false,
+% because the if the length of the list is not even then the last element will not be compared.
+% Also we need to use ! to make sure that the last two elements it's only compared using this rule, otherwise
+% the execution tree will analyze the last rule too.
+isOrderedAsc([First,Second]) :- First=<Second, !.
+isOrderedAsc([First,Second|Rest]) :- First=<Second, isOrderedAsc(Rest).
+
 
 pocurrencies(X,[],[],N).
 pocurrencies(X,[X|XS],[N|OS],N) :- Np is N+1,pocurrencies(X,XS,OS,Np).
