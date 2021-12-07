@@ -1,4 +1,4 @@
-%contains(element,list)
+%contains(Element,List)
 %Returns true if the list contains the element
 % Examples:
 % contains(1,[3,4,5]) = false
@@ -6,13 +6,13 @@
 contains(X,[_|XS]):- contains(X,XS).
 contains(X,[X|_]).
 
-% append(listA,listB,resultList)
+% append(ListA,ListB,ResultList)
 % resultList is the concatenation of listA and listB
 %append([],Ys,Ys).          % the result of ppeding and empty list to Ys is the same Ys
 %append([X|Xs],Ys,[X|Zs])   % the result of appending the first element X on YS is X followed by Zs
 %    :- append(Xs,Ys,Zs).   % where Zs is the result of appending Xs to Ys
 
-% permutation(list,permutationList)
+% permutation(List,PermutationList)
 % permutationList is a permutation of list
 % Example:
 % permutation([1,2,3],L).
@@ -28,17 +28,22 @@ permutation(L,[X|Xs]):- %A permutation of the list L is a list starting with the
     append(V,P,W),      %and V apended P forms W, which is the rest of L without X
     permutation(W,Xs).  %and Xs is a permutation of W
 
-% sum(list,result+)
+% sum(List,Result+)
 % result is the sum of all the elements in the list. Result must be a numeric value.
 sum([],0).
 sum([First|Rest],Result) :-
     sum(Rest,RestResult),
     Result is First+RestResult.
 
-%parells(L+,LO)
-parells([],[]).
-parells([X|XS],[X|L]) :- X mod 2 =:= 0,!, parells(XS,L).
-parells([Y|YS],L) :- parells(YS,L).
+%evens(List,EvenList)
+% EvenList is the list of even numbers that exists on the list
+evens([],[]).         %If the list is empty the EvenList is empty too
+evens([First|Rest],[First|RestEvenList])    %The first element is added on the even list if:
+    :- First mod 2 =:= 0,!,                 % - The first element is divisible by 2
+    evens(Rest,RestEvenList).               %The rest of the even list is constructed recrusivly inspecting the rest of the list
+%If the first element is not even we still need to inspect the rest of the list
+evens([First|Rest],EvenList)
+    :- evens(Rest,EvenList).
 
 %palindrom(L)
 palindrom([]).
