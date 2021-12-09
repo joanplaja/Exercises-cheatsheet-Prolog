@@ -60,17 +60,21 @@ palindrome([First|Rest]) :-         % The list will be a palindrome if:
 % isOrderedAsc([1,2,3]) = true
 isOrderedAsc([]).
 isOrderedAsc([Element]).
-%If next line is missing the example isOrderedAsc([1,2,3,4,5,1]) will return true and its false,
+% If next line is missing the example isOrderedAsc([1,2,3,4,5,1]) will return true and its false,
 % because the if the length of the list is not even then the last element will not be compared.
 % Also we need to use ! to make sure that the last two elements it's only compared using this rule, otherwise
 % the execution tree will analyze the last rule too.
 isOrderedAsc([First,Second]) :- First=<Second, !.
 isOrderedAsc([First,Second|Rest]) :- First=<Second, isOrderedAsc(Rest).
 
-
-pocurrencies(X,[],[],N).
-pocurrencies(X,[X|XS],[N|OS],N) :- Np is N+1,pocurrencies(X,XS,OS,Np).
-pocurrencies(X,[Y|YS],O,N) :- X =\= Y, Np is N+1,pocurrencies(X,YS,O,Np).
+% indexOf(Element,List,Indexes)
+% Indexes is a list of positions where element is present
+% Examples:
+% indexOf(1,[0,1,2,1],L). L = [1,3]
+indexOf(Element,List,Indexes) :- iIndexOf(Element,List,Indexes,0).
+iIndexOf(Element,[],[],Position).
+iIndexOf(Element,[Element|Rest],[Position|IndexesRest],Position) :- NextPosition is Position+1,iIndexOf(Element,Rest,IndexesRest,NextPosition).
+iIndexOf(Element,[First|Rest],Indexes,Position) :- Element =\= First, NextPosition is Position+1,iIndexOf(Element,Rest,Indexes,NextPosition).
 
 %ocurrencies(X,L,O)
 ocurrencies(X,L,O) :- pocurrencies(X,L,O,0).
