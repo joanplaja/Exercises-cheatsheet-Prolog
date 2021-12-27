@@ -76,13 +76,15 @@ iIndexOf(Element,[],[],Position).
 iIndexOf(Element,[Element|Rest],[Position|IndexesRest],Position) :- NextPosition is Position+1,iIndexOf(Element,Rest,IndexesRest,NextPosition).
 iIndexOf(Element,[First|Rest],Indexes,Position) :- Element =\= First, NextPosition is Position+1,iIndexOf(Element,Rest,Indexes,NextPosition).
 
-%ocurrencies(X,L,O)
-ocurrencies(X,L,O) :- pocurrencies(X,L,O,0).
-
-%inserta(X,XS,YS) ys llista insertar x ordenat
-inserta(X,[],[X]).
-inserta(X,[Y|YS],[X,Y|YS]) :- X =< Y.
-inserta(X,[Y|YS],[Y|ZS]) :- X > Y, inserta(X,YS,ZS).
+% insert(Element,List,ResultList)
+% ResultList is the result list of inserting the Element on the list List
+% Examples:
+% insert(1,[2,3,4],ResultList).
+% insert(2,[1,3,4],ResultList).
+% insert(5,[1,2,3,4],ResultList).
+insert(Element,[],[Element]).
+insert(Element,[First|Rest],[Element,First|Rest]) :- Element =< First.
+insert(Element,[First|ListRest],[First|ResultListRest]) :- Element > First, insert(Element,ListRest,ResultListRest).
 
 %ordenains(L,LO) LO es llista ordenada de L
 ordenains(L,LO) :- xordenains(L,[],LO).
