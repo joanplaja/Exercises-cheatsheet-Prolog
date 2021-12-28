@@ -86,11 +86,14 @@ insert(Element,[],[Element]).
 insert(Element,[First|Rest],[Element,First|Rest]) :- Element =< First.
 insert(Element,[First|ListRest],[First|ResultListRest]) :- Element > First, insert(Element,ListRest,ResultListRest).
 
-%ordenains(L,LO) LO es llista ordenada de L
-ordenains(L,LO) :- xordenains(L,[],LO).
-
-xordenains([],TEMPORAL,TEMPORAL).
-xordenains([X|XS],TEMPORAL,LO) :- inserta(X,TEMPORAL,RESULTAT), xordenains(XS,RESULTAT,LO).
+% sortAsc(List,SortedList)
+% SortedList is the List sorted ascending
+% Examples:
+% sortAsc([3,1,4,5,10,0,2,2],SortedList).
+sortAsc(List,SortedList) :- isortAsc(List,[],SortedList).
+% Recrusive predicate to insert each element ordered on a temporal list
+isortAsc([],SortedList,SortedList).
+isortAsc([First|Rest],TemporalSortedList,SortedList) :- insert(First,TemporalSortedList,Result), isortAsc(Rest,Result,SortedList).
 
 %mcd(M,N,D) D maxim comu divisor de M i N
 mcd(M,N,D) :- M > N, imcd(M,N,N,D).
