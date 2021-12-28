@@ -95,13 +95,16 @@ sortAsc(List,SortedList) :- isortAsc(List,[],SortedList).
 isortAsc([],SortedList,SortedList).
 isortAsc([First|Rest],TemporalSortedList,SortedList) :- insert(First,TemporalSortedList,Result), isortAsc(Rest,Result,SortedList).
 
-%mcd(M,N,D) D maxim comu divisor de M i N
-mcd(M,N,D) :- M > N, imcd(M,N,N,D).
-mcd(M,N,D) :- imcd(M,N,M,D).
-
-imcd(M,N,0,D).
+% mcd(M,N,D)
+% Pre: M and N >= 1
+% D is the maximum common divisor of M and N
+mcd(M,N,D) :- M > N, imcd(M,N,N,D),!.
+mcd(M,N,D) :- imcd(M,N,M,D),!.
+% Recrusive predicate to find the maximum common divisor starting with the smallest value
+imcd(M,N,1,1) :- !.
 imcd(M,N,A,A) :- M mod A =:= 0,N mod A =:= 0,!.
 imcd(M,N,A,D) :- Ap is A-1,imcd(M,N,Ap,D).
+
 
 entupla(V1,V2,tupla(V1,V2)).
 
