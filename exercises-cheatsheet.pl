@@ -180,38 +180,45 @@ intersection([FirstA|RestListA],ListB,[FirstA|IntersectionSetRest]) :-
 intersection([FirstA|RestListA],ListB,IntersectionSet)
     :- intersection(RestListA,ListB,IntersectionSet).       % Otherwise if does not exists, calcualtes the rest of the intersection
 
-% union(ListA,ListB,UnionSet)
+% union_(ListA,ListB,UnionSet) ( union its implemented by prolog it seems so renamed to union_ )
 % UnionSet is the union set between ListA and ListB
 % Examples:
-% union([1,2,3,1,4,1],[3,1,3,11,100,4,5],UnionSet).
+% union_([1,2,3,1,4,1],[3,1,3,11,100,4,5],UnionSet).
 % Iterate both lists until both are empty
-union([],[],[]).
-union([FirstA|RestListA],ListB,[FirstA|UnionSetRest]) :-
+union_([],[],[]).
+union_([FirstA|RestListA],ListB,[FirstA|UnionSetRest]) :-
     remove(FirstA,RestListA,NewListA),
     remove(FirstA,ListB,NewListB),
-    union(NewListA,NewListB,UnionSetRest).
-union(ListA,[FirstB|RestListB],[FirstB|UnionSetRest]) :-
+    union_(NewListA,NewListB,UnionSetRest),!.
+union_(ListA,[FirstB|RestListB],[FirstB|UnionSetRest]) :-
     remove(FirstB,ListA,NewListA),
     remove(FirstB,RestListB,NewListB),
-    union(NewListA,NewListB,UnionSetRest).
+    union_(NewListA,NewListB,UnionSetRest),!.
 
-%diferencia(X,Y,Z) suposem no repetits o utilitzem multiconjunt vist mes tard
-%sa de fer just al contrari de dalt
-%es adir si existeixen els dos costats els eliminem(no afegim) en comptes dafegit
-diferencia([],[],[]).
-diferencia([X|XS],Y,Z) :-
-    append(Yi,[X|Ys],Y), % X apareix a Y
-    append(Yi,Ys,Yp),    % creem la nova Y treient x
-    diferencia(XS,Yp,Z). %calculem la diferencia de la altre i guardem a ZS
-%sino existeix
-diferencia([X|XS],Y,[X|ZS]) :- diferencia(XS,Y,ZS).
-
-diferencia(X,[Y|YS],Z) :-
-    append(Xi,[Y|Xs],X), % Y apareix a X
-    append(Xi,Xs,Xp),    % creem la nova X treient Y
-    interseccio(YS,Xp,Z). %calculem la diferencia de la altre i guardem a ZS
-%sino existeix
-diferencia(X,[Y|YS],[Y|ZS]) :- diferencia(X,YS,ZS).
+% difference(ListA,ListB,DifferenceSet)
+% DiffeerenceSet is the set containing elements which appears in one list but not in the other
+% Examples:
+% difference([1,2,2,3,3,4,5],[3,3,7,4,1,11],DifferenceSet).
+difference([],[],[]).
+difference([FirstA|RestListA],ListB,DifferenceSet) :-
+    contains(FirstA,ListB),             %If the first element of listA appears on listB
+    remove(FirstA,RestListA,NewListA),  %Remove the element from both list ( Avoid duplicates )
+    remove(FirstA,ListB,NewListB),
+    difference(NewListA,NewListB,DifferenceSet),!.
+%Otherwise we add the first element of the listA to the DifferenceSet
+%There's no problem doing this now because we are not modifying the listB
+difference([FirstA|RestListA],ListB,[FirstA|DifferenceSetRest]) :-
+    remove(FirstA,RestListA,NewListA), %remove the diferent element from the rest of the list
+    difference(NewListA,ListB,DifferenceSetRest),!.
+difference(ListA,[FirstB|RestListB],DifferenceSet) :-
+    contains(FirstB,ListA),             %If the first element of listB appears on listA
+    remove(FirstB,RestListB,NewListB),  %Remove the element from both list ( Avoid duplicates )
+    remove(FirstB,ListA,NewListA),
+    difference(NewListA,NewListB,DifferenceSet),!.
+%Otherwise we add the first element of the listB to the DifferenceSet
+difference(ListA,[FirstB|RestListB],[FirstB|DifferenceSetRest]) :-
+    remove(FirstB,RestListB,NewListB), %remove the diferent element from the rest of the list
+    difference(ListA,NewListB,DifferenceSetRest),!.
 
 
 factoritza(N,F) :- ifactoritza(N,[],F,2).
