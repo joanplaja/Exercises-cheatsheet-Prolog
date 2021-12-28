@@ -105,6 +105,24 @@ imcd(M,N,1,1) :- !.
 imcd(M,N,A,A) :- M mod A =:= 0,N mod A =:= 0,!.
 imcd(M,N,A,D) :- Ap is A-1,imcd(M,N,Ap,D).
 
+% divisors(Number,DivisorsList)
+% DivisorsList is a list of numbers which are divisible for Number
+% Example:
+% divisors(10,DivisorsList).
+% divisors(22,DivisorsList).
+divisors(Number,DivisorsList) :- idivisors(Number,DivisorsList,1),!.
+% recrusive call, starting from the value 1 to Number
+idivisors(Number,[Half,Number],Half) :- Half is Number // 2.
+idivisors(Number,[Value|DivisorsListRest],Value)
+    :- Half is Number // 2, Value < Half,
+    Number mod Value =:= 0,
+    NextValue is Value+1,
+    idivisors(Number,DivisorsListRest,NextValue).
+idivisors(Number,DivisorsList,Value)
+    :- Half is Number // 2, Value < Half,
+    NextValue is Value+1,
+    idivisors(Number,DivisorsList,NextValue).
+
 % How to create tuples
 predicateTuple(V1,V2,tuple(V1,V2)).
 % Usage example:
@@ -168,13 +186,6 @@ ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
 ifactoritza(N,L,F,I) :-
     I < N, N mod I =:= 0,buscaAfegeixTupla(I,L,RESULTAT), Ip is N // I, ifactoritza(Ip,RESULTAT,F,2).
 ifactoritza(N,L,F,I) :- I < N,Ip is I+1, ifactoritza(N,L,F,Ip).
-
-%MIRAR AL REVES REPEASSAR..
-divisors(N,L) :- idivisors(N,L,1).
-
-idivisors(N,[N],N).
-idivisors(N,[I|F],I) :- I < N, N mod I =:= 0, Ip is I+1, idivisors(N,F,Ip), !.
-idivisors(N,F,I) :- I < N, Ip is I+1, idivisors(N,F,Ip).
 
 %llistaUnica(X,LLLISTA,RESULTAT) afegeix a la llista si no existeix
 llistaUnica(X,[],[X]).
@@ -246,43 +257,10 @@ creixent([]).
 creixent([X]).
 creixent([X,Y|XS]) :- X =< Y, creixent([Y|XS]).
 
-%ocurrencies X,L,O 0 es llista de posicions de L on apareix X
-% [] for(i = length) (i==x)[i] else i++
-ocurrencies(X,L,O) :- iocurrencies(X,L,O,0).
-iocurrencies(X,[],[],N).
-iocurrencies(X,[X|XS],[I|YS],I) :- Ip is I+1, iocurrencies(X,XS,YS,Ip).
-iocurrencies(X,[Y|XS],YS,I) :- Ip is I+1, iocurrencies(X,XS,YS,Ip).
-%        Y   XS                YS
-%inserta 1, [0,4,5,6,7] ->  [0,1--]
-% INSERTA 1 [4,5,6,7] -> [1,4,5,6,7]
-inserta(Y,[],[Y]).
-inserta(Y,[X|XS],[Y,X|XS]) :- Y =< X.
-inserta(Y,[X|XS],[X|ZS]) :- inserta(Y,XS,ZS).
-
 %rota(N,L,R)
 rota(0,L,L).
 rota(N,[X],[X]).
 %rota(N,[X|XS],R) :- Np is N-1,  append(XS,[X],LN), rota(Np,LN,R).
-
-%mcd 10 5 -> 5 < 10 -> provem 5 i anem baixant
-% else provem a partir de laltre
-% i = 5 fins que no sigui 1 _> si es 1 tornem
-
-mcd(X1,X2,R) :- X1 > X2, imcd(X1,X2,R,X2),!.
-mcd(X1,X2,R) :- imcd(X1,X2,R,X1).
-
-%imcd(X1,X2,R,I)
-imcd(X1,X2,1,1).
-imcd(X1,X2,I,I) :- X1 mod I =:= 0, X2 mod I =:= 0,!.
-imcd(X1,X2,R,I) :- Ip is I-1, imcd(X1,X2,R,Ip).
-
-%divisors(NUMERO,LLISTA) LLISTA TE ELS DIVISORS DEL NUMERO
-% 10  -> -- mira el mod fer append
-divisors(N,[N|LS]) :- Np is N // 2, idivisors(N,LS,Np).
-
-idivisors(N,[1],1) :- !.
-idivisors(N,[I|LS],I) :- N mod I =:= 0,!, Ip is I-1, idivisors(N,LS,Ip).
-idivisors(N,L,I) :- Ip is I-1, idivisors(N,L,Ip).
 
 % hihasuma(L) L
 % [1,2,3]
@@ -298,11 +276,6 @@ permutacio(L,[X|Xs]):- append(V,[X|P],L),
     append(V,P,W),
     permutacio(W,Xs).
 
-
-%eliminaNocurs(N,L,LR):
-%eliminaNocurs(N,[],[]).
-%eliminaNocurs(N,L,[X|XS]) :-append(A,[X|B],L), append(A,B,C),Np is N-1, count1(X,C,Np),!, extreure(X,L,SENSEX), eliminaNocurs(N,SENSEX,XS).
-
 eliminaNocurs(N,[],[]).
 eliminaNocurs(N,[X|XS],[X|RS]) :- Np is N-1, count1(X,XS,Np), extreure(X,XS,SENSEX), eliminaNocurs(N,SENSEX,RS).
 eliminaNocurs(N,[X|XS],R) :- extreure(X,XS,SENSEX), eliminaNocurs(N,SENSEX,R).
@@ -313,14 +286,5 @@ count1(NUMERO,[],0).
 count1(NUMERO,[NUMERO|XS],VEGADES) :- count1(NUMERO,XS,Vp),!, VEGADES is Vp+1.
 count1(NUMERO,[X|XS],VEGADES) :- count1(NUMERO,XS,VEGADES).
 
-test1(L,Z) :- append(DAVANT,[X|REDERA],L), append(DAVANT,[Y|REDERA],Z).
-% test1([1,2],Z).
-% test1([1,2,3],Z).
-
 equal([],[]).
 equal([X|XS],[X|ZS]) :- equal(XS,ZS).
-
-test2(w4(X),w4(Z)):- w4(X), w4(Z), \+(equal(X,Z)), test1(X,Z).
-%test2(w4("aaas"),X).
-
-
