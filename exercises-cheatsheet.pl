@@ -180,23 +180,20 @@ intersection([FirstA|RestListA],ListB,[FirstA|IntersectionSetRest]) :-
 intersection([FirstA|RestListA],ListB,IntersectionSet)
     :- intersection(RestListA,ListB,IntersectionSet).       % Otherwise if does not exists, calcualtes the rest of the intersection
 
-factoritza(N,F) :- ifactoritza(N,[],F,2).
-
-ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
-ifactoritza(N,L,F,I) :-
-    I < N, N mod I =:= 0,buscaAfegeixTupla(I,L,RESULTAT), Ip is N // I, ifactoritza(Ip,RESULTAT,F,2).
-ifactoritza(N,L,F,I) :- I < N,Ip is I+1, ifactoritza(N,L,F,Ip).
-
-%llistaUnica(X,LLLISTA,RESULTAT) afegeix a la llista si no existeix
-llistaUnica(X,[],[X]).
-llistaUnica(X,[X|XS],[X|XS]).
-llistaUnica(X,[Y|YS],[Y|FS]) :- X =\= Y, llistaUnica(X,YS,FS).
-
-
-%unio(X,Y,Z)
-unio([],[],[]).
-unio([X|XS],Y,Z) :- unio(XS,Y,RESULTAT), llistaUnica(X,RESULTAT,Z).
-unio(X,[Y|YS],Z) :- unio(X,YS,RESULTAT), llistaUnica(Y,RESULTAT,Z).
+% union(ListA,ListB,UnionSet)
+% UnionSet is the union set between ListA and ListB
+% Examples:
+% union([1,2,3,1,4,1],[3,1,3,11,100,4,5],UnionSet).
+% Iterate both lists until both are empty
+union([],[],[]).
+union([FirstA|RestListA],ListB,[FirstA|UnionSetRest]) :-
+    remove(FirstA,RestListA,NewListA),
+    remove(FirstA,ListB,NewListB),
+    union(NewListA,NewListB,UnionSetRest).
+union(ListA,[FirstB|RestListB],[FirstB|UnionSetRest]) :-
+    remove(FirstB,ListA,NewListA),
+    remove(FirstB,RestListB,NewListB),
+    union(NewListA,NewListB,UnionSetRest).
 
 %diferencia(X,Y,Z) suposem no repetits o utilitzem multiconjunt vist mes tard
 %sa de fer just al contrari de dalt
@@ -215,6 +212,19 @@ diferencia(X,[Y|YS],Z) :-
     interseccio(YS,Xp,Z). %calculem la diferencia de la altre i guardem a ZS
 %sino existeix
 diferencia(X,[Y|YS],[Y|ZS]) :- diferencia(X,YS,ZS).
+
+
+factoritza(N,F) :- ifactoritza(N,[],F,2).
+
+ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
+ifactoritza(N,L,F,I) :-
+    I < N, N mod I =:= 0,buscaAfegeixTupla(I,L,RESULTAT), Ip is N // I, ifactoritza(Ip,RESULTAT,F,2).
+ifactoritza(N,L,F,I) :- I < N,Ip is I+1, ifactoritza(N,L,F,Ip).
+
+%llistaUnica(X,LLLISTA,RESULTAT) afegeix a la llista si no existeix
+llistaUnica(X,[],[X]).
+llistaUnica(X,[X|XS],[X|XS]).
+llistaUnica(X,[Y|YS],[Y|FS]) :- X =\= Y, llistaUnica(X,YS,FS).
 
 %multi_a_conjunt(M, C)(X,Y,Z)
 multi_a_conjunt([],[]).
