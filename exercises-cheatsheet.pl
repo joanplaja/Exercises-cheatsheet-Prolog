@@ -118,6 +118,27 @@ findAndIncrement(Key,[],[tuple(Key,1)]).
 findAndIncrement(Key,[tuple(Key,Value)|Rest],[tuple(Key,NewValue)|Rest]) :- !, NewValue is Value+1.
 findAndIncrement(Key,[tuple(Key,Value)|Rest],[tuple(Key,Value)|ResultRest]) :- findAndIncrement(Key,Rest,ResultRest).
 
+% Quicksort:
+% quicksort(List,SortedList)
+% Example:
+% quicksort([3,1,4,5,10,0,2,2],SortedList).
+quicksort([],[]).
+quicksort([First|Rest],SortedList) :-
+    divideListBy(First,Rest,Greater,Lesser),
+    quicksort(Lesser,SortedLesser),
+    quicksort(Greater,SortedGreater),
+    append(SortedLesser,[First|SortedGreater],SortedList).
+
+% divideListBy(Value,List,Greater,Lesser)
+% Greater are the values greater than the Value on the List, and lesser are the values lesser or equal
+% Example:
+% divideListBy(4,[3,1,4,5,10,0,2,2],Greater,Lesser).
+divideListBy(Value,[],[],[]).
+divideListBy(Value,[First|Rest],[First|GreaterRest],Lesser):-
+    First > Value, divideListBy(Value,Rest,GreaterRest,Lesser).
+divideListBy(Value,[First|Rest],Greater,[First|LesserRest]) :-
+    First =< Value, divideListBy(Value,Rest,Greater,LesserRest).
+
 factoritza(N,F) :- ifactoritza(N,[],F,2).
 
 ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
