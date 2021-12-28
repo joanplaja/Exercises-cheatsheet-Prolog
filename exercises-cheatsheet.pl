@@ -162,13 +162,6 @@ intersection([FirstA|RestListA],ListB,[FirstA|IntersectionSetRest]) :-
 intersection([FirstA|RestListA],ListB,IntersectionSet)
     :- intersection(RestListA,ListB,IntersectionSet).       % Otherwise if does not exists, calcualtes the rest of the intersection
 
-intersection(X,[Y|YS],[Y|ZS]) :-
-    append(Xi,[Y|Xs],X), % Y apareix a X
-    append(Xi,Xs,Xp),    % creem la nova X treient Y
-    intersection(YS,Xp,ZS). %calculem la interseccio de la altre i guardem a ZS
-%sino existeix
-intersection(X,[Y|YS],Z) :- intersection(X,YS,Z).
-
 factoritza(N,F) :- ifactoritza(N,[],F,2).
 
 ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
