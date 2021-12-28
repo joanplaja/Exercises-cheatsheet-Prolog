@@ -139,6 +139,36 @@ divideListBy(Value,[First|Rest],[First|GreaterRest],Lesser):-
 divideListBy(Value,[First|Rest],Greater,[First|LesserRest]) :-
     First =< Value, divideListBy(Value,Rest,Greater,LesserRest).
 
+% remove(Value,List,ResultList)
+% The ResultList is the List without the value/s Value
+% Examples:
+% remove(1,[1,2,1,4,5,1,10,11,10],ResultList).
+% remove(10,[10,2,1,4,5,10,10,11,10],ResultList).
+remove(Value,[],[]).
+remove(Value,[Value|Rest],ResultList) :- remove(Value,Rest,ResultList).
+remove(Value,[First|Rest],[First|ResultListRest]) :- Value =\= First, remove(Value,Rest,ResultListRest).
+
+% intersection(ListA,ListB,IntersectionSet)
+% IntersectionSet is the intersection set between ListA and ListB
+% Examples:
+% intersection([1,2,3,1,4,1],[3,1,4,5],IntersectionSet).
+intersection([],[],[]).
+intersection([FirstA|RestListA],ListB,[FirstA|IntersectionSetRest]) :-
+     contains(FirstA,ListB),                                % first element of the listA appears also on the listB,
+                                                            % we could use also: append(FirstB,[FirstA|RestListB],ListB)
+     remove(FirstA,RestListA,NewListA),                     % Remove the element from the bothLists
+     remove(FirstA,ListB,NewListB),
+     intersection(NewListA,NewListB,IntersectionSetRest),!.   % Calculates the rest of the intersection (! dont check other branches)
+intersection([FirstA|RestListA],ListB,IntersectionSet)
+    :- intersection(RestListA,ListB,IntersectionSet).       % Otherwise if does not exists, calcualtes the rest of the intersection
+
+intersection(X,[Y|YS],[Y|ZS]) :-
+    append(Xi,[Y|Xs],X), % Y apareix a X
+    append(Xi,Xs,Xp),    % creem la nova X treient Y
+    intersection(YS,Xp,ZS). %calculem la interseccio de la altre i guardem a ZS
+%sino existeix
+intersection(X,[Y|YS],Z) :- intersection(X,YS,Z).
+
 factoritza(N,F) :- ifactoritza(N,[],F,2).
 
 ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
@@ -163,22 +193,6 @@ llistaUnica(X,[Y|YS],[Y|FS]) :- X =\= Y, llistaUnica(X,YS,FS).
 unio([],[],[]).
 unio([X|XS],Y,Z) :- unio(XS,Y,RESULTAT), llistaUnica(X,RESULTAT,Z).
 unio(X,[Y|YS],Z) :- unio(X,YS,RESULTAT), llistaUnica(Y,RESULTAT,Z).
-
-%interseccio(X,Y,Z) suposem que x i y no te repeticions o utilitzas multiconjunt abans
-interseccio([],[],[]).
-interseccio([X|XS],Y,[X|ZS]) :-
-    append(Yi,[X|Ys],Y), % X apareix a Y
-    append(Yi,Ys,Yp),    % creem la nova Y treient x
-    interseccio(XS,Yp,ZS). %calculem la interseccio de la altre i guardem a ZS
-%sino existeix
-interseccio([X|XS],Y,Z) :- interseccio(XS,Y,Z).
-
-interseccio(X,[Y|YS],[Y|ZS]) :-
-    append(Xi,[Y|Xs],X), % Y apareix a X
-    append(Xi,Xs,Xp),    % creem la nova X treient Y
-    interseccio(YS,Xp,ZS). %calculem la interseccio de la altre i guardem a ZS
-%sino existeix
-interseccio(X,[Y|YS],Z) :- interseccio(X,YS,Z).
 
 %diferencia(X,Y,Z) suposem no repetits o utilitzem multiconjunt vist mes tard
 %sa de fer just al contrari de dalt
@@ -305,11 +319,6 @@ eliminaNocurs(N,[X|XS],R) :- extreure(X,XS,SENSEX), eliminaNocurs(N,SENSEX,R).
 count1(NUMERO,[],0).
 count1(NUMERO,[NUMERO|XS],VEGADES) :- count1(NUMERO,XS,Vp),!, VEGADES is Vp+1.
 count1(NUMERO,[X|XS],VEGADES) :- count1(NUMERO,XS,VEGADES).
-
-%extreure(NUMERO,LLISTA,RESULTAT)
-extreure(NUMERO,[],[]).
-extreure(NUMERO,[NUMERO|XS],RESULTAT) :- extreure(NUMERO,XS,RESULTAT).
-extreure(NUMERO,[X|XS],[X|RESULTAT]) :- X =\= NUMERO, extreure(NUMERO,XS,RESULTAT).
 
 test1(L,Z) :- append(DAVANT,[X|REDERA],L), append(DAVANT,[Y|REDERA],Z).
 % test1([1,2],Z).
