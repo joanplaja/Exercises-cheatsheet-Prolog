@@ -220,6 +220,18 @@ difference(ListA,[FirstB|RestListB],[FirstB|DifferenceSetRest]) :-
     remove(FirstB,RestListB,NewListB), %remove the diferent element from the rest of the list
     difference(ListA,NewListB,DifferenceSetRest),!.
 
+%rang(B,D,L) L llista de numero enters de B a D, suposem B <= D
+
+% range(Lowest,Highest,RangeList)
+% The RangeList contains the numbers starting from Lowest to Highest
+% Examples:
+% range(1,10,RangeList).
+range(Lowest,Highest,RangeList) :- irange(Highest,RangeList,Lowest).
+irange(Highest,[],Value) :- Value > Highest.
+irange(Highest,[Value|RangeListRest],Value) :-
+    Value =< Highest,
+    NextValue is Value+1, irange(Highest,RangeListRest,NextValue).
+
 %daus(P,NDices,L) Sumar P tirant N daus, L llista expressa una forma
 % dices(Points,NDices,WaysList)
 % The WaysList is a list which contains the NDices numbers representing dices values that sums Points.
@@ -227,7 +239,7 @@ difference(ListA,[FirstB|RestListB],[FirstB|DifferenceSetRest]) :-
 % dices(10,3,WaysList).
 dices(0,0,[]).
 dices(Points,NDices,[DiceValue|Rest]) :-
-    rang(1,7,PossibleDiceValues), % rang(lowest,highest,List) List contains the numbers from lowest to highest  - 1
+    range(1,6,PossibleDiceValues), % rang(lowest,highest,List) List contains the numbers from lowest to highest  - 1
     contains(DiceValue,PossibleDiceValues),
     Points - DiceValue >= 0,
     RestingPoints is Points - DiceValue,
@@ -255,12 +267,6 @@ multi_a_conjunt2([],[]).
 multi_a_conjunt2([X|XS],Z):-
     append(_,[X|_],XS), multi_a_conjunt(XS,Z). %si apareix mes no lafegim
 multi_a_conjunt2([X|XS],[X|ZS]):- multi_a_conjunt(XS,ZS). %sino apareix mes lafegim
-
-%rang(B,D,L) L llista de numero enters de B a D, suposem B <= D
-rang(B,D,L) :- irang(B,D,L,B).
-
-irang(B,D,[],I) :- I >= D.
-irang(B,D,[I|ZS],I) :- I < D, Ip is I+1, irang(B,D,ZS,Ip).
 
 % Z es X canviant nomes un valor
 %# test1([],Z)
