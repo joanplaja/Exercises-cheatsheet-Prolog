@@ -105,12 +105,18 @@ imcd(M,N,1,1) :- !.
 imcd(M,N,A,A) :- M mod A =:= 0,N mod A =:= 0,!.
 imcd(M,N,A,D) :- Ap is A-1,imcd(M,N,Ap,D).
 
-
-entupla(V1,V2,tupla(V1,V2)).
-
-buscaAfegeixTupla(NOMBRE,[],[tupla(NOMBRE,1)]).
-buscaAfegeixTupla(NOMBRE,[tupla(NOMBRE,E)|TS],[tupla(NOMBRE,Ep)|TS]) :- !, Ep is E+1.
-buscaAfegeixTupla(NOMBRE,[tupla(N,E)|TS],[tupla(N,E)|LS]) :- buscaAfegeixTupla(NOMBRE,TS,LS).
+% How to create tuples
+predicateTuple(V1,V2,tuple(V1,V2)).
+% Usage example:
+%   findAndIncrement(Key,TupleList,ResultTupleList)
+%   The ResultTupleList is the result of incrementing the tuple with key Key by 1, if the key doesnt exists, creates a new tuple with 1 value
+%   Example:
+%   findAndIncrement('joan',[tuple('joan',1)],ResultTupleList).
+%   findAndIncrement('joan',[],ResultTupleList).
+%   findAndIncrement('joan',[tuple('joan',1),tuple('josep',1)],ResultTupleList).
+findAndIncrement(Key,[],[tuple(Key,1)]).
+findAndIncrement(Key,[tuple(Key,Value)|Rest],[tuple(Key,NewValue)|Rest]) :- !, NewValue is Value+1.
+findAndIncrement(Key,[tuple(Key,Value)|Rest],[tuple(Key,Value)|ResultRest]) :- findAndIncrement(Key,Rest,ResultRest).
 
 factoritza(N,F) :- ifactoritza(N,[],F,2).
 
