@@ -220,6 +220,19 @@ difference(ListA,[FirstB|RestListB],[FirstB|DifferenceSetRest]) :-
     remove(FirstB,RestListB,NewListB), %remove the diferent element from the rest of the list
     difference(ListA,NewListB,DifferenceSetRest),!.
 
+%daus(P,NDices,L) Sumar P tirant N daus, L llista expressa una forma
+% dices(Points,NDices,WaysList)
+% The WaysList is a list which contains the NDices numbers representing dices values that sums Points.
+% Example:
+% dices(10,3,WaysList).
+dices(0,0,[]).
+dices(Points,NDices,[DiceValue|Rest]) :-
+    rang(1,7,PossibleDiceValues), % rang(lowest,highest,List) List contains the numbers from lowest to highest  - 1
+    contains(DiceValue,PossibleDiceValues),
+    Points - DiceValue >= 0,
+    RestingPoints is Points - DiceValue,
+    NewNDices is NDices - 1,
+    dices(RestingPoints,NewNDices,Rest).
 
 factoritza(N,F) :- ifactoritza(N,[],F,2).
 
@@ -248,16 +261,6 @@ rang(B,D,L) :- irang(B,D,L,B).
 
 irang(B,D,[],I) :- I >= D.
 irang(B,D,[I|ZS],I) :- I < D, Ip is I+1, irang(B,D,ZS,Ip).
-
-%daus(P,N,L) Sumar P tirant N daus, L llista expressa una forma
-daus(0,0,[]).
-daus(P,N,[X|LS]) :- rang(1,7,L),append(_,[X|_],L) ,X < 6, P-X >= 0,Pp is P-X,Np is N-1, daus(Pp,Np,LS).
-
-daus2(P,N,L) :- idaus(P,N,L,[1,2,3,4,5,6]).
-
-idaus(0,0,[],NUMEROS).
-idaus(P,N,[NUM|RESTA],[NUM|NUMEROS]) :- P-NUM >= 0, Pp is P-NUM, Np is N-1, idaus(Pp,Np,RESTA,[NUM|NUMEROS]).
-idaus(P,N,RESULTAT,[NUM|NUMEROS]) :- idaus(P,N,RESULTAT,NUMEROS).
 
 % Z es X canviant nomes un valor
 %# test1([],Z)
