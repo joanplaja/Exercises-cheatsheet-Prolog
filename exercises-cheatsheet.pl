@@ -246,17 +246,41 @@ dices(Points,NDices,[DiceValue|Rest]) :-
     NewNDices is NDices - 1,
     dices(RestingPoints,NewNDices,Rest).
 
+% insertSet(Element,Set,ResultSet)
+% ResultSet is the result set of inserting the Element on the set ResultSet
+% Examples:
+% insertSet(5,[1,2,3,4,5],ResultSet).
+% insertSet(5,[1,2,3,4,5,6,7],ResultSet).
+% insertSet(5,[1,2,3,4,5,6],ResultSet).
+% insertSet(5,[],ResultSet).
+insertSet(Element,[],[Element]).
+insertSet(Element,[First|SetRest],[Element,First|ResultSetRest]) :- Element < First, append([],SetRest,ResultSetRest).
+insertSet(Element,[First|SetRest],[First|ResultSetRest]) :- Element > First, insertSet(Element,SetRest,ResultSetRest).
+insertSet(Element,[First|SetRest],[First|ResultSetRest]) :- Element == First, append([],SetRest,ResultSetRest).
+
+% toSet(List,Set)
+% Example:
+% toSet([1,2,1,2,3,3,4,5,5,4,10,1,11,100,1],Set).
+% There's multiple ways for doing this:
+% 1. The impelmented check if the element still exists, if it does continues iterating util it does not exists more and it's added to the set
+% 2. Removing all First elements on the ListRest each time the first is visited
+% 3. toSet2 way, start from the bottom of the "tree" with empty set and insert each element using insertSet
+toSet([],[]).
+toSet([First|ListRest],Set) :-
+    contains(First,ListRest), toSet(ListRest,Set),!.
+toSet([First|ListRest],[First|SetRest]) :- toSet(ListRest,SetRest).
+
+toSet2([],[]).
+toSet2([X|XS],Z):- toSet2(XS,RESULTAT), insertSet(X,RESULTAT,Z).
+% toSet2([1,2,1,2,3,3,4,5,5,4,10,1,11,100,1],Set).
+
+
 factoritza(N,F) :- ifactoritza(N,[],F,2).
 
 ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
 ifactoritza(N,L,F,I) :-
     I < N, N mod I =:= 0,buscaAfegeixTupla(I,L,RESULTAT), Ip is N // I, ifactoritza(Ip,RESULTAT,F,2).
 ifactoritza(N,L,F,I) :- I < N,Ip is I+1, ifactoritza(N,L,F,Ip).
-
-%llistaUnica(X,LLLISTA,RESULTAT) afegeix a la llista si no existeix
-llistaUnica(X,[],[X]).
-llistaUnica(X,[X|XS],[X|XS]).
-llistaUnica(X,[Y|YS],[Y|FS]) :- X =\= Y, llistaUnica(X,YS,FS).
 
 %multi_a_conjunt(M, C)(X,Y,Z)
 multi_a_conjunt([],[]).
@@ -272,16 +296,6 @@ multi_a_conjunt2([X|XS],[X|ZS]):- multi_a_conjunt(XS,ZS). %sino apareix mes lafe
 %# test1([],Z)
 test1(L,Z) :- append(DAVANT,[X|REDERA],L), append(DAVANT,[Y|REDERA],Z), Y =\= X.
 % test1([1,2],Z).
-
-%palidrom(L)
-palidrom([]).
-% primer == ultim element, com obtenim ultim element?
-% [PRIMER(....)ULTIM]
-palidrom([X|XS]) :- append(_,[ULTIM],XS),X =:= ULTIM, append(MITG,[ULTIM],XS), palidrom(MITG).
-
-creixent([]).
-creixent([X]).
-creixent([X,Y|XS]) :- X =< Y, creixent([Y|XS]).
 
 %rota(N,L,R)
 rota(0,L,L).
