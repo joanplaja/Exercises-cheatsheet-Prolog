@@ -274,57 +274,12 @@ toSet2([],[]).
 toSet2([X|XS],Z):- toSet2(XS,RESULTAT), insertSet(X,RESULTAT,Z).
 % toSet2([1,2,1,2,3,3,4,5,5,4,10,1,11,100,1],Set).
 
-
-factoritza(N,F) :- ifactoritza(N,[],F,2).
-
-ifactoritza(N,L,F,N) :- buscaAfegeixTupla(N,L,F).
-ifactoritza(N,L,F,I) :-
-    I < N, N mod I =:= 0,buscaAfegeixTupla(I,L,RESULTAT), Ip is N // I, ifactoritza(Ip,RESULTAT,F,2).
-ifactoritza(N,L,F,I) :- I < N,Ip is I+1, ifactoritza(N,L,F,Ip).
-
-%multi_a_conjunt(M, C)(X,Y,Z)
-multi_a_conjunt([],[]).
-multi_a_conjunt([X|XS],Z):- multi_a_conjunt(XS,RESULTAT), llistaUnica(X,RESULTAT,Z).
-
-%una altre forma
-multi_a_conjunt2([],[]).
-multi_a_conjunt2([X|XS],Z):-
-    append(_,[X|_],XS), multi_a_conjunt(XS,Z). %si apareix mes no lafegim
-multi_a_conjunt2([X|XS],[X|ZS]):- multi_a_conjunt(XS,ZS). %sino apareix mes lafegim
-
-% Z es X canviant nomes un valor
-%# test1([],Z)
-test1(L,Z) :- append(DAVANT,[X|REDERA],L), append(DAVANT,[Y|REDERA],Z), Y =\= X.
-% test1([1,2],Z).
-
-%rota(N,L,R)
-rota(0,L,L).
-rota(N,[X],[X]).
-%rota(N,[X|XS],R) :- Np is N-1,  append(XS,[X],LN), rota(Np,LN,R).
-
-% hihasuma(L) L
-% [1,2,3]
-% suma(L) -> valor
-% 1 -> ihihasuma([2,1,3]) -> append(l) suma(1)
-hihasuma(L) :- append(A,[X|B],L), append(A,B,C), suma(C,X).
-suma([],0).
-suma([X|XS],N) :- suma(XS,Np), N is Np+X.
-
-
-permutacio([],[]).
-permutacio(L,[X|Xs]):- append(V,[X|P],L),
-    append(V,P,W),
-    permutacio(W,Xs).
-
-eliminaNocurs(N,[],[]).
-eliminaNocurs(N,[X|XS],[X|RS]) :- Np is N-1, count1(X,XS,Np), extreure(X,XS,SENSEX), eliminaNocurs(N,SENSEX,RS).
-eliminaNocurs(N,[X|XS],R) :- extreure(X,XS,SENSEX), eliminaNocurs(N,SENSEX,R).
-
-
-%count(NUMERO,LLISTA,VEGADES)
-count1(NUMERO,[],0).
-count1(NUMERO,[NUMERO|XS],VEGADES) :- count1(NUMERO,XS,Vp),!, VEGADES is Vp+1.
-count1(NUMERO,[X|XS],VEGADES) :- count1(NUMERO,XS,VEGADES).
-
-equal([],[]).
-equal([X|XS],[X|ZS]) :- equal(XS,ZS).
+% onlyOneDifference(List,NewList)
+% The NewList is equal to List just chaing one value
+% Example:
+% onlyOneDifference([1,2,3],[1,2,4]).
+% This implementation cannot be used to find the list because
+% elements should be initialized
+onlyOneDifference(List,NewList) :-
+    append(First,[Value|Rest],List),
+    append(First,[DiferentValue|Rest],NewList), DiferentValue =\= Value.
